@@ -2,11 +2,20 @@
 
 require_once "vendor/autoload.php";
 
-$class = new \VMSConnect\Integrations\Digifort("192.168.7.211", [
-  'auth' => [
-    'user' => 'smartcam',
-    'password' => 'scMunicipio2017!'
-  ]
-]);
+header('Content-Type: application/json');
 
-echo $class->getCameras();
+try{
+    $class = new \VMSConnect\Integrations\Digifort("192.168.7.211", [
+        'auth' => [
+            'user' => 'smartcam',
+            'password' => 'scMunicipio2017!'
+        ]
+    ]);
+
+    echo json_encode($class->getCameras());
+
+}
+catch(Exception $e)
+{
+    print_r($e);
+}

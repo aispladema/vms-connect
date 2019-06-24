@@ -6,5 +6,8 @@ use VMSConnect\Integrations\iVMS;
 
 abstract class BaseVMS implements iVMS
 {
-  protected $host;
+    /**
+     * @var string 
+     */
+    protected $host;
 }
