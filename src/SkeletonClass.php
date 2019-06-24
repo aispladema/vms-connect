@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace League\Skeleton;
+namespace VMSConnect;
+
+use VMSConnect\Integrations\Digifort;
 
 class SkeletonClass
 {
@@ -12,6 +14,7 @@ class SkeletonClass
     public function __construct()
     {
         // constructor body
+        $digifort = new Digifort();
     }
 
     /**
