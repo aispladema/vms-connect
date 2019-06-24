@@ -101,6 +101,17 @@ class Digifort extends BaseVMS
     }
 
     private function startExport(string $camera, Carbon $start, Carbon $end): array {
+        $url = sprintf("http://%s:8601/Interface/Cameras/StartExport", $this->host);
+
+        $query =  [
+            'Camera' => $camera,
+            'StartDate' => $start-,
+            'StartTime' => $start,
+            'EndDate' => $end,
+            'EndTime' => $end
+            ];
+
+        $response = $this->client->request('GET', $url, ['query' => $query]);
 
     }
 
