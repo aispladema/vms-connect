@@ -83,26 +83,32 @@ class Digifort extends BaseVMS
         throw new Exception('Not implemented');
     }
 
-    public function export(string $camera, Carbon $start, Carbon $end): array
+    public function export(string $camera, Carbon $start, Carbon $end, string $outputPath): array
     {
-        $url = sprintf("http://%s:8601/Interface/GetApiVersion", $this->host);
-        $response = $this->client->request('GET', $url);
-        $body = $response->getBody()->getContents();
-
-        $xml = new \SimpleXMLElement($body);
-
-        if (0 != count($xml)) {
-            $name = $xml->Data->ApiVersion->Name;
-            $version = $xml->Data->ApiVersion->Version;
-            return sprintf("%s %s", $name, $version);
-        }
-
-        return "Error";
+        /**
+         * Pseudo:
+         *
+         * files = this->startExport()
+         *
+         * foreach (file as files) {
+            response[] = this->downloadExport(file);
+         * }
+         *
+         * this->closeExport(files->getSession())
+         *
+         * return response;
+         */
     }
 
-    public function downloadExport(string $downloadUrl): array
-    {
-        throw new Exception('Not implemented');
+    private function startExport(string $camera, Carbon $start, Carbon $end): array {
+
     }
 
+    private function downloadExport(string $sessionId, string $filename, string $outputPath): string {
+
+    }
+
+    private function closeExport(string $sessionId) {
+
+    }
 }

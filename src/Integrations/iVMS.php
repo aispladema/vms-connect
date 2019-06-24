@@ -37,12 +37,7 @@ interface iVMS
      * @param Carbon $end Recorded sequence end DateTime
      * @return array
      */
-    public function export(string $camera, Carbon $start, Carbon $end): array;
+    public function export(string $camera, Carbon $start, Carbon $end, string $outputPath): array;
 
-    /**
-     * @param string $downloadUrl
-     * @return array
-     */
-    public function downloadExport(string $downloadUrl): array;
 
 }
