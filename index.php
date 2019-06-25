@@ -12,7 +12,8 @@ try{
         ]
     ]);
 
-    $files = $class->export("Entrada Pladema", \Carbon\Carbon::now(), \Carbon\Carbon::now(), "tmp_folder");
+    $files = $class->export("Entrada Pladema", \Carbon\Carbon::now()->subSeconds(60), \Carbon\Carbon::now(), __DIR__ . "/storage");
+
     var_dump($files);
 
 }

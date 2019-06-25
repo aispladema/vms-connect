@@ -4,6 +4,7 @@ namespace VMSConnect\Integrations;
 
 use Carbon\Carbon;
 use Nathanmac\Utilities\Parser\Parser;
+use GuzzleHttp\Client;
 
 class Digifort extends BaseVMS
 {
@@ -12,6 +13,7 @@ class Digifort extends BaseVMS
      * @var \GuzzleHttp\Client
      */
     private $client;
+    private $options;
 
     /**
      * Digifort constructor.
@@ -21,6 +23,7 @@ class Digifort extends BaseVMS
     public function __construct(string $host, $options = [])
     {
         $this->host = $host;
+        $this->options = $options;
         $this->client = new \GuzzleHttp\Client;
         if (!empty($options) && !empty($options['auth'])) {
             $this->client = new \GuzzleHttp\Client([
@@ -132,7 +135,45 @@ class Digifort extends BaseVMS
     }
 
     private function downloadExport(string $sessionId, string $filename, string $outputPath): string {
-        return $outputPath . "/" . $filename;
+        //Example request
+        // http://192.168.7.211:8601/Interface/Cameras/Playback/GetExportedFile
+        //  ?SessionID=93F275EB5F3FD45596410BE754075197
+        //  &Filename=93F275EB5F3FD45596410BE754075197_1.mp4
+        //  &ResponseFormat=XML
+        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/GetExportedFile", $this->host);
+
+        $query =  [
+            'SessionID' => $sessionId,
+            'Filename' => $filename,
+        ];
+
+        //$response = $this->client->request('GET', $url, ['query' => $query])
+
+        // Download file
+        $tmpFile = tempnam($outputPath, 'vms-connect-download');
+        $tmpFile .= ".mp4";
+        $handle = fopen($tmpFile, 'w');
+
+
+        $options = array(
+            'base_uri' => '',
+            'verify' => false,
+            'sink' => handle,
+            'curl.options' => array(
+//                'CURLOPT_RETURNTRANSFER' => true,
+//                'CURLOPT_FILE' => $handle
+            ),
+            'query' => $query,
+        );
+
+       // $client = new Client($options);
+
+        $res = $this->client->get($url, $options);
+        echo $res->getStatusCode() . "\n";
+        echo $res->getHeaderLine('content-type') . "\n";
+        //fclose($handle);
+
+        return $tmpFile;
     }
 
     private function closeExport(string $sessionId) {
