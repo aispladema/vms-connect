@@ -140,38 +140,32 @@ class Digifort extends BaseVMS
         //  ?SessionID=93F275EB5F3FD45596410BE754075197
         //  &Filename=93F275EB5F3FD45596410BE754075197_1.mp4
         //  &ResponseFormat=XML
-        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/GetExportedFile", $this->host);
 
         $query =  [
             'SessionID' => $sessionId,
             'Filename' => $filename,
         ];
-
-        //$response = $this->client->request('GET', $url, ['query' => $query])
+        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/GetExportedFile", $this->host);
 
         // Download file
         $tmpFile = tempnam($outputPath, 'vms-connect-download');
-        $tmpFile .= ".mp4";
-        $handle = fopen($tmpFile, 'w');
+        rename($tmpFile, $tmpFile .= ".mp4");
 
-
+        $handle = fopen($tmpFile, 'a');
         $options = array(
-            'base_uri' => '',
+            'sink' => $handle,
             'verify' => false,
-            'sink' => handle,
-            'curl.options' => array(
-//                'CURLOPT_RETURNTRANSFER' => true,
-//                'CURLOPT_FILE' => $handle
+            'timeout' => 0,
+            'connect_timeout' => 50,
+            'headers' => array(
+                'Content-Type' => 'video/mp4',
             ),
             'query' => $query,
         );
 
-       // $client = new Client($options);
-
         $res = $this->client->get($url, $options);
-        echo $res->getStatusCode() . "\n";
-        echo $res->getHeaderLine('content-type') . "\n";
-        //fclose($handle);
+
+        fclose($handle);
 
         return $tmpFile;
     }

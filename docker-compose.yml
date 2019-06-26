@@ -1,8 +1,8 @@
 version: '3'
 services:
   server:
-    image: php:7.0-apache
+    build: .
     ports:
-     - 8080:80
+     - 8000:80
     volumes:
      - ./:/var/www/html
