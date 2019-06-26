@@ -93,7 +93,7 @@ class Digifort extends BaseVMS
             $response[] = $path;
         }
 
-        if ($files)
+        if (!empty($files))
             $this->closeExport(current($files)['sessionId']);
 
         return $response;
@@ -135,7 +135,19 @@ class Digifort extends BaseVMS
         return $outputPath . "/" . $filename;
     }
 
-    private function closeExport(string $sessionId) {
+    private function closeExport(string $sessionId): int {
+        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/CloseExport", $this->host);
 
+        $query =  [
+            'SessionID' => $sessionId
+            ];
+
+        $response = $this->client->request('GET', $url, ['query' => $query]);
+        $body = $response->getBody()->getContents();
+        $xml = new \SimpleXMLElement($body);
+        if (!empty($xml) && isset($xml->Code))
+            return (int)$xml->Code;
+
+        return -1;
     }
 }
