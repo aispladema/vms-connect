@@ -85,30 +85,69 @@ class Digifort extends BaseVMS
 
     public function export(string $camera, Carbon $start, Carbon $end, string $outputPath): array
     {
-        /**
-         * Pseudo:
-         *
-         * files = this->startExport()
-         *
-         * foreach (file as files) {
-            response[] = this->downloadExport(file);
-         * }
-         *
-         * this->closeExport(files->getSession())
-         *
-         * return response;
-         */
+        $files = $this->startExport($camera, $start,  $end);
+
+        $response = [];
+        foreach ($files as $file) {
+            $path = $this->downloadExport($file['sessionId'], $file['filename'], $outputPath);
+            $response[] = $path;
+        }
+
+        if (!empty($files))
+            $this->closeExport(current($files)['sessionId']);
+
+        return $response;
     }
 
     private function startExport(string $camera, Carbon $start, Carbon $end): array {
+        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/StartExport", $this->host);
 
+        $query =  [
+            'Camera' => $camera,
+            'StartDate' => $start->format("Y.m.d"),
+            'StartTime' => $start->format("H.i.s.0000"),
+            'EndDate' => $end->format("Y.m.d"),
+            'EndTime' => $end->format("H.i.s.0000")
+            ];
+
+        $response = $this->client->request('GET', $url, ['query' => $query]);
+        $body = $response->getBody()->getContents();
+
+        $files = [];
+        $xml = new \SimpleXMLElement($body);
+        if (!empty($xml) && !empty($xml->Data) && $xml->Message == "OK") {
+            $sessionId = (string)$xml->Data->Export->ID;
+            foreach ($xml->Data->Export->Files as $file) {
+                if (isset($file->File)) {
+                    array_push($files, [
+                        "sessionId" => $sessionId,
+                        "filename" => (string)$file->File->Filename,
+                        "size" => (string)$file->File->Size
+                    ]);
+                }
+            }
+        }
+
+        return $files;
     }
 
     private function downloadExport(string $sessionId, string $filename, string $outputPath): string {
-
+        return $outputPath . "/" . $filename;
     }
 
-    private function closeExport(string $sessionId) {
+    private function closeExport(string $sessionId): int {
+        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/CloseExport", $this->host);
 
+        $query =  [
+            'SessionID' => $sessionId
+            ];
+
+        $response = $this->client->request('GET', $url, ['query' => $query]);
+        $body = $response->getBody()->getContents();
+        $xml = new \SimpleXMLElement($body);
+        if (!empty($xml) && isset($xml->Code))
+            return (int)$xml->Code;
+
+        return -1;
     }
 }

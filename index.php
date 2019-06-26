@@ -12,7 +12,8 @@ try{
         ]
     ]);
 
-    echo json_encode($class->getCameras());
+    $files = $class->export("Entrada Pladema", \Carbon\Carbon::now(), \Carbon\Carbon::now(), "tmp_folder");
+    var_dump($files);
 
 }
 catch(Exception $e)
