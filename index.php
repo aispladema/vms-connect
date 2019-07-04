@@ -2,21 +2,30 @@
 
 require_once "vendor/autoload.php";
 
+use VMSConnect\Integrations\Digifort;
+use VMSConnect\VMSConnector;
+
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 header('Content-Type: application/json');
 
 
 try{
-    $class = new \VMSConnect\Integrations\Digifort("192.168.7.211", [
-        'auth' => [
-            'user' => 'smartcam',
-            'password' => 'scMunicipio2017!'
-        ]
+
+    $connector = new VMSConnector([
+       "type" => Digifort::fqcn(),
+       "host" => "192.168.7.211",
+       "port" => "8601",
+       'user' => 'smartcam',
+       'password' => 'scMunicipio2017!'
     ]);
 
-    $files = $class->export("Entrada Pladema", \Carbon\Carbon::now()->subSeconds(300), \Carbon\Carbon::now()->subSeconds(60), __DIR__ . "/storage");
+    $class = \VMSConnect\ConnectorFactory::getConnector($connector);
 
-    echo json_encode($files);
+
+    $cameras = $class->getCameras();
+    echo json_encode($cameras);
+    //$files = $class->export("Entrada Pladema", \Carbon\Carbon::now()->subSeconds(300), \Carbon\Carbon::now()->subSeconds(60), __DIR__ . "/storage");
+    //echo json_encode($files);
 
 }
 catch(Exception $e)
