@@ -17,6 +17,6 @@ abstract class BaseVMS implements iVMS
      */
     public static function fqcn()
     {
-        return __CLASS__;
+        return static::class;
     }
 }
