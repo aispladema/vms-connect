@@ -185,4 +185,40 @@ class Digifort extends BaseVMS
 
         return -1;
     }
+
+    public function getTimeline(string $camera, Carbon $start, Carbon $end): array {
+        $url = sprintf("http://%s:8601/Interface/Cameras/Playback/GetTimelineData", $this->host);
+
+        $query =  [
+            'Camera' => $camera,
+            'StartDate' => $start->format("Y.m.d"),
+            'StartTime' => $start->format("H.i.s.000"),
+            'EndDate' => $end->format("Y.m.d"),
+            'EndTime' => $end->format("H.i.s.001"),
+            'Audio' => false,
+            'Metadata' => false,
+            ];
+
+        $response = $this->client->request('GET', $url, ['query' => $query]);
+        $body = $response->getBody()->getContents();
+
+        $matches = array();
+        preg_match_all('/<\?xml[\s\S]*?<\/Response>/', $body, $matches);
+
+        $timeline = [];
+        foreach($matches[0] as $match) {
+            $xml = new \SimpleXMLElement($match);
+            if (!empty($xml) && !empty($xml->Data) && $xml->Message == "OK") {
+                foreach ($xml->Data->TimelineData as $tl) {
+                        array_push($timeline, [
+                            "startTime" => (string)$tl->StartTime,
+                            "endTime" => (string)$tl->EndTime,
+                        ]);
+                }
+            }
+        }
+
+        return $timeline;
+    }
+
 }

@@ -21,7 +21,9 @@ try{
 
     $class = \VMSConnect\ConnectorFactory::getConnector($connector);
 
-
+    $timelines = $class->getTimeline("Entrada Pladema", \Carbon\Carbon::parse('2019-06-27 05:00:00'), \Carbon\Carbon::parse('2019-06-27 14:00:00'));
+    echo json_encode($timelines);
+    
     $cameras = $class->getCameras();
     echo json_encode($cameras);
     //$files = $class->export("Entrada Pladema", \Carbon\Carbon::now()->subSeconds(300), \Carbon\Carbon::now()->subSeconds(60), __DIR__ . "/storage");
