@@ -108,9 +108,9 @@ class Digifort extends BaseVMS
         $query =  [
             'Camera' => $camera,
             'StartDate' => $start->format("Y.m.d"),
-            'StartTime' => $start->format("H.i.s.0000"),
+            'StartTime' => $start->format("H.i.s.001"),
             'EndDate' => $end->format("Y.m.d"),
-            'EndTime' => $end->format("H.i.s.0000")
+            'EndTime' => $end->format("H.i.s.001")
             ];
 
         $response = $this->client->request('GET', $url, ['query' => $query]);
@@ -192,7 +192,7 @@ class Digifort extends BaseVMS
         $query =  [
             'Camera' => $camera,
             'StartDate' => $start->format("Y.m.d"),
-            'StartTime' => $start->format("H.i.s.000"),
+            'StartTime' => $start->format("H.i.s.001"),
             'EndDate' => $end->format("Y.m.d"),
             'EndTime' => $end->format("H.i.s.001"),
             'Audio' => false,
