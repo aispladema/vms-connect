@@ -46,5 +46,5 @@ interface iVMS
      * @param Carbon $end Recorded sequence end DateTime
      * @return array
      */
-    public function getTimeline(string $camera, Carbon $start, Carbon $end): array;
+    public function getTimelines(string $camera, Carbon $start, Carbon $end): array;
 }

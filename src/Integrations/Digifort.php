@@ -186,7 +186,7 @@ class Digifort extends BaseVMS
         return -1;
     }
 
-    public function getTimeline(string $camera, Carbon $start, Carbon $end): array {
+    public function getTimelines(string $camera, Carbon $start, Carbon $end): array {
         $url = sprintf("http://%s:8601/Interface/Cameras/Playback/GetTimelineData", $this->host);
 
         $query =  [
