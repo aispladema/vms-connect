@@ -62,6 +62,7 @@ class Digifort extends BaseVMS
             foreach ($xml->Data->Cameras as $camera) {
                 if (isset($camera->Camera)) {
                     array_push($cameras, [
+                        "_id" => (string)$camera->Camera->Name,
                         "name" => (string)$camera->Camera->Name,
                         "description" => (string)$camera->Camera->Description,
                         "latitude" => (float)$camera->Camera->Latitude,
@@ -71,6 +72,37 @@ class Digifort extends BaseVMS
                 }
             }
             return $cameras;
+        }
+
+        return [];
+    }
+
+    public function getCameraById(string $camera): array
+    {
+        $url = sprintf("http://%s:8601/Interface/Cameras/GetCameras?Cameras=%s", $this->host, $camera);
+        $response = $this->client->request('GET', $url);
+        $body = $response->getBody()->getContents();
+
+        $xml = new \SimpleXMLElement($body);
+
+        if (!empty($xml) && !empty($xml->Data)) {
+            $cameras = [];
+            foreach ($xml->Data->Cameras as $camera) {
+                if (isset($camera->Camera)) {
+                    array_push($cameras, [
+                        "_id" => (string)$camera->Camera->Name,
+                        "name" => (string)$camera->Camera->Name,
+                        "description" => (string)$camera->Camera->Description,
+                        "latitude" => (float)$camera->Camera->Latitude,
+                        "longitude" => (float)$camera->Camera->Longitude,
+                        "active" => (string)$camera->Camera->Active == 'TRUE'
+                    ]);
+                }
+            }
+            if(!empty($cameras[0]))
+            {
+                return $cameras[0];
+            }
         }
 
         return [];
