@@ -59,17 +59,17 @@ class Digifort extends BaseVMS
 
         if (!empty($xml) && !empty($xml->Data)) {
             $cameras = [];
-            foreach ($xml->Data->Cameras as $camera) {
-                if (isset($camera->Camera)) {
-                    array_push($cameras, [
-                        "_id" => (string)$camera->Camera->Name,
-                        "name" => (string)$camera->Camera->Name,
-                        "description" => (string)$camera->Camera->Description,
-                        "latitude" => (float)$camera->Camera->Latitude,
-                        "longitude" => (float)$camera->Camera->Longitude,
-                        "active" => (string)$camera->Camera->Active == 'TRUE'
-                    ]);
-                }
+            foreach ($xml->Data->Cameras->Camera as $camera) {
+
+                array_push($cameras, [
+                    "_id" => (string)$camera->Name,
+                    "name" => (string)$camera->Name,
+                    "description" => (string)$camera->Description,
+                    "latitude" => (float)$camera->Latitude,
+                    "longitude" => (float)$camera->Longitude,
+                    "active" => (string)$camera->Active == 'TRUE'
+                ]);
+
             }
             return $cameras;
         }
@@ -87,17 +87,17 @@ class Digifort extends BaseVMS
 
         if (!empty($xml) && !empty($xml->Data)) {
             $cameras = [];
-            foreach ($xml->Data->Cameras as $camera) {
-                if (isset($camera->Camera)) {
-                    array_push($cameras, [
-                        "_id" => (string)$camera->Camera->Name,
-                        "name" => (string)$camera->Camera->Name,
-                        "description" => (string)$camera->Camera->Description,
-                        "latitude" => (float)$camera->Camera->Latitude,
-                        "longitude" => (float)$camera->Camera->Longitude,
-                        "active" => (string)$camera->Camera->Active == 'TRUE'
-                    ]);
-                }
+            foreach ($xml->Data->Cameras->Camera as $camera) {
+
+                array_push($cameras, [
+                    "_id" => (string)$camera->Name,
+                    "name" => (string)$camera->Name,
+                    "description" => (string)$camera->Description,
+                    "latitude" => (float)$camera->Latitude,
+                    "longitude" => (float)$camera->Longitude,
+                    "active" => (string)$camera->Active == 'TRUE'
+                ]);
+
             }
             if(!empty($cameras[0]))
             {
@@ -118,17 +118,15 @@ class Digifort extends BaseVMS
 
         if (!empty($xml) && !empty($xml->Data)) {
             $statuses = [];
-            foreach ($xml->Data->Cameras as $camera) {
-                if (isset($camera->Camera)) {
-                    array_push($statuses, [
-                        "_id" => (string)$camera->Camera->Name,
-                        "name" => (string)$camera->Camera->Name,
-                        "active" => (string)$camera->Camera->Active == 'TRUE',
-                        "working" => (float)$camera->Camera->Working == 'TRUE',
-                        "active_time" => (int)$camera->Camera->ActiveTime,
-                        "inactive_time" => (int)$camera->Camera->InactiveTime
-                    ]);
-                }
+            foreach ($xml->Data->Cameras->Camera as $camera) {
+                array_push($statuses, [
+                    "_id" => (string)$camera->Name,
+                    "name" => (string)$camera->Name,
+                    "active" => (string)$camera->Active == 'TRUE',
+                    "working" => (string)$camera->Working == 'TRUE',
+                    "active_time" => (int)$camera->ActiveTime,
+                    "inactive_time" => (int)$camera->InactiveTime
+                ]);
             }
             return $statuses;
         }
@@ -146,17 +144,16 @@ class Digifort extends BaseVMS
 
         if (!empty($xml) && !empty($xml->Data)) {
             $statuses = [];
-            foreach ($xml->Data->Cameras as $camera) {
-                if (isset($camera->Camera)) {
-                    array_push($statuses, [
-                        "_id" => (string)$camera->Camera->Name,
-                        "name" => (string)$camera->Camera->Name,
-                        "active" => (string)$camera->Camera->Active == 'TRUE',
-                        "working" => (float)$camera->Camera->Working == 'TRUE',
-                        "active_time" => (int)$camera->Camera->ActiveTime,
-                        "inactive_time" => (int)$camera->Camera->InactiveTime
-                    ]);
-                }
+            foreach ($xml->Data->Cameras->Camera as $camera) {
+                array_push($statuses, [
+                    "_id" => (string)$camera->Name,
+                    "name" => (string)$camera->Name,
+                    "active" => (string)$camera->Active == 'TRUE',
+                    "working" => (string)$camera->Working == 'TRUE',
+                    "active_time" => (int)$camera->ActiveTime,
+                    "inactive_time" => (int)$camera->InactiveTime
+                ]);
+                
             }
             if(!empty($statuses[0]))
             {
