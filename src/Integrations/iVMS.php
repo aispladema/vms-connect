@@ -20,10 +20,25 @@ interface iVMS
     public function getCameras(): array;
 
     /**
+     * @return array
+     */
+    public function getCameraById(string $camera): array;
+
+    /**
+     * @return array
+     */
+    public function getStatus(): array;
+
+    /**
+     * @return array
+     */
+    public function getStatusByCameraId(string $camera): array;
+
+    /**
      * @param string $camera Camera ID
      * @return byte[]
      */
-    public function getSnapshot(string$camera): array;
+    public function getSnapshot(string $camera): string;
 
     /**
      * @param string $camera Camera ID
