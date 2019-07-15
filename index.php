@@ -30,12 +30,26 @@ try{
     //$timelines = $class->getTimelines("Entrada Pladema", \Carbon\Carbon::parse('2019-06-27 05:00:00'), \Carbon\Carbon::parse('2019-06-27 15:00:00'));
     //echo json_encode($timelines);
     
-    $cameras = $class->getCameras();
-    echo json_encode($cameras);
+    //$cameras = $class->getCameras();
+    //echo json_encode($cameras);
 
-    //$camera = $class->getCameraById("Entrada Pladema 2");
+    //$cameras = $class->getStatus();
+    //echo json_encode($cameras);
+
+    //$camera = $class->getCameraById("Entrada Pladema");
     //echo json_encode($camera);
-    
+
+    //$camera = $class->getStatusByCameraId("Entrada Pladema");
+    //echo json_encode($camera);
+
+
+    //Snapshot
+    //header('Content-Type: text/html');
+    //$image = $class->getSnapshot("Fija 099");
+    //$image = base64_encode($image);
+    //echo "<img src='data:image/jpeg;base64, $image' />";
+
+    //Export
     //$files = $class->export("Entrada Pladema", \Carbon\Carbon::now()->subSeconds(300), \Carbon\Carbon::now()->subSeconds(60), __DIR__ . "/storage");
     //echo json_encode($files);
 

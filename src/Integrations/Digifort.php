@@ -108,9 +108,85 @@ class Digifort extends BaseVMS
         return [];
     }
 
-    public function getSnapshot(string $camera): array
+    public function getStatus(): array
     {
-        throw new Exception('Not implemented');
+        $url = sprintf("http://%s:8601/Interface/Cameras/GetStatus", $this->host);
+        $response = $this->client->request('GET', $url);
+        $body = $response->getBody()->getContents();
+
+        $xml = new \SimpleXMLElement($body);
+
+        if (!empty($xml) && !empty($xml->Data)) {
+            $statuses = [];
+            foreach ($xml->Data->Cameras as $camera) {
+                if (isset($camera->Camera)) {
+                    array_push($statuses, [
+                        "_id" => (string)$camera->Camera->Name,
+                        "name" => (string)$camera->Camera->Name,
+                        "active" => (string)$camera->Camera->Active == 'TRUE',
+                        "working" => (float)$camera->Camera->Working == 'TRUE',
+                        "active_time" => (int)$camera->Camera->ActiveTime,
+                        "inactive_time" => (int)$camera->Camera->InactiveTime
+                    ]);
+                }
+            }
+            return $statuses;
+        }
+
+        return [];
+    }
+
+    public function GetStatusByCameraId(string $camera): array
+    {
+        $url = sprintf("http://%s:8601/Interface/Cameras/GetStatus?Cameras=%s", $this->host, $camera);
+        $response = $this->client->request('GET', $url);
+        $body = $response->getBody()->getContents();
+
+        $xml = new \SimpleXMLElement($body);
+
+        if (!empty($xml) && !empty($xml->Data)) {
+            $statuses = [];
+            foreach ($xml->Data->Cameras as $camera) {
+                if (isset($camera->Camera)) {
+                    array_push($statuses, [
+                        "_id" => (string)$camera->Camera->Name,
+                        "name" => (string)$camera->Camera->Name,
+                        "active" => (string)$camera->Camera->Active == 'TRUE',
+                        "working" => (float)$camera->Camera->Working == 'TRUE',
+                        "active_time" => (int)$camera->Camera->ActiveTime,
+                        "inactive_time" => (int)$camera->Camera->InactiveTime
+                    ]);
+                }
+            }
+            if(!empty($statuses[0]))
+            {
+                return $statuses[0];
+            }
+        }
+
+        return [];
+    }
+
+    public function getSnapshot(string $camera, array $opts = []): string
+    {
+        $query =  [
+            'Camera' => $camera,
+            'Width' => 1280,
+            'Height' => 720,
+            'Quality' => 70
+        ];
+
+        $query = array_merge($query, $opts);
+
+        $url = sprintf("http://%s:8601/Interface/Cameras/GetSnapshot", $this->host);
+
+        $options = array(
+            'query' => $query
+        );
+        $response = $this->client->get($url, $options);
+        $contents = $response->getBody();
+
+        return $contents;
     }
 
     public function getJPEGStream(string $camera): string
