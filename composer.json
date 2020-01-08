@@ -26,7 +26,7 @@
         "php": "~7.1",
         "guzzlehttp/guzzle": "^6.3",
         "nathanmac/parser": "^4.3",
-        "nesbot/carbon": "^1.22"
+        "nesbot/carbon": "^2.27"
     },
     "require-dev": {
         "phpunit/phpunit": ">=7.0",
@@ -49,7 +49,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2.3-dev"
+            "dev-master": "2.0.0-dev"
         }
     },
     "config": {
